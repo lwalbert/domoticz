@@ -206,7 +206,11 @@
 #define sSwitchTypeParrot 0x87
 #define sSwitchTypeKD101 0x88
 #define sSwitchTypeFS20 0x89
-
+#define sSwitchIHCOutput 0x80
+#define sSwitchIHCDimmer 0x81
+#define sSwitchIHCInput 0x82
+#define sSwitchIHCFBInput 0x83
+#define sSwitchIHCFBOutput 0x84
 // Switch commands
 #define gswitch_sOff 0x00
 #define gswitch_sClose 0x00
