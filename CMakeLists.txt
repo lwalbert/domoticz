@@ -60,7 +60,7 @@ IF(CMAKE_SYSTEM_NAME STREQUAL "NetBSD")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 ENDIF()
 IF(CMAKE_COMPILER_IS_GNUCXX)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-psabi -rdynamic")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -Wno-psabi -rdynamic")
   #SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-switch")
   #ADD_DEFINITIONS( -Wall -O0 -ggdb )
   #ADD_DEFINITIONS( -Wfatal-errors -Wformat=2 -Werror=format-security )
@@ -249,6 +249,7 @@ hardware/KMTronicTCP.cpp
 hardware/KMTronicUDP.cpp
 hardware/Kodi.cpp
 hardware/Limitless.cpp
+hardware/LKIHC.cpp
 hardware/LogitechMediaServer.cpp
 hardware/Meteorologisk.cpp
 hardware/Meteostick.cpp
@@ -655,14 +656,14 @@ ELSE(USE_STATIC_BOOST)
    message(STATUS "Linking against boost dynamic libraries")
 ENDIF(USE_STATIC_BOOST)
 
-find_package(Boost REQUIRED COMPONENTS thread system)
+find_package(Boost REQUIRED COMPONENTS thread system iostreams)
 IF(Boost_FOUND)
     MESSAGE(STATUS "BOOST includes found at: ${Boost_INCLUDE_DIR}")
 ELSE(Boost_FOUND)
     MESSAGE(FATAL_ERROR "Boost thread/system library not found on your system, try to get this installed.")
 ENDIF(Boost_FOUND)
 
-target_link_libraries(domoticz Boost::thread Boost::system)
+target_link_libraries(domoticz Boost::thread Boost::system Boost::iostreams)
 
 # compare found vs required libBoost version
 IF(Boost_VERSION VERSION_LESS DOMO_MIN_LIBBOOST_VERSION)
