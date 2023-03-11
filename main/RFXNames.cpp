@@ -278,6 +278,7 @@ static const STR_TABLE_SINGLE HardwareTypeTable[] = {
 	{ HTYPE_TeleinfoMeterTCP, "Teleinfo EDF with LAN interface", "TeleInfo" },
 	{ HTYPE_MQTTAutoDiscovery, "MQTT Auto Discovery Client Gateway with LAN interface", "MQTT-AD" },
 	{ HTYPE_RFLINKMQTT, "RFLink Gateway MQTT",	"RFLink" },
+	{ HTYPE_IHC, "LK IHC Controller", "LKIHC" },
 	{ 0, nullptr, nullptr },
 };
 
@@ -936,6 +937,11 @@ const char* RFX_Type_SubType_Desc(const unsigned char dType, const unsigned char
 		{ pTypeGeneralSwitch, sSwitchMiLightv1, "MiLightv1" },
 		{ pTypeGeneralSwitch, sSwitchMiLightv2, "MiLightv2" },
 		{ pTypeGeneralSwitch, sSwitchHT6P20, "HT6P20" },
+		{ pTypeGeneralSwitch, sSwitchIHCOutput, "IHC Output" },
+		{ pTypeGeneralSwitch, sSwitchIHCDimmer, "IHC Dimmer" },
+		{ pTypeGeneralSwitch, sSwitchIHCInput, "IHC Input" },
+		{ pTypeGeneralSwitch, sSwitchIHCFBInput, "IHC Functionblock Input" },
+		{ pTypeGeneralSwitch, sSwitchIHCFBOutput, "IHC Functionblock Output" },
 		{ pTypeGeneralSwitch, sSwitchTypeDoitrand, "Doitrand" },
 		{ pTypeGeneralSwitch, sSwitchTypeWarema, "Warema" },
 		{ pTypeGeneralSwitch, sSwitchTypeAnsluta, "Ansluta" },

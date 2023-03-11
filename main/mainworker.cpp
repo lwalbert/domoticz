@@ -55,6 +55,7 @@
 #include "../hardware/TeleinfoSerial.h"
 #include "../hardware/TeleinfoTCP.h"
 #include "../hardware/Limitless.h"
+#include "../hardware/LKIHC.h"
 #include "../hardware/MochadTCP.h"
 #include "../hardware/EnOceanESP2.h"
 #include "../hardware/EnOceanESP3.h"
@@ -864,6 +865,10 @@ bool MainWorker::AddHardwareFromParams(
 	case HTYPE_HEOS:
 		//HEOS by DENON
 		pHardware = new CHEOS(ID, Address, Port, Username, Password, Mode1, Mode2);
+		break;
+	case HTYPE_IHC:
+		//LK IHC Controller
+		pHardware = new CLKIHC(ID, Address, Port, Username, Password);
 		break;
 	case HTYPE_MultiFun:
 		//MultiFun LAN

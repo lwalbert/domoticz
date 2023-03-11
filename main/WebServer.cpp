@@ -379,9 +379,11 @@ namespace http
 			m_pWebEm->RegisterActionCode("setrego6xxtype", [this](auto&& session, auto&& req, auto&& redirect_uri) { SetRego6XXType(session, req, redirect_uri); });
 			m_pWebEm->RegisterActionCode("sets0metertype", [this](auto&& session, auto&& req, auto&& redirect_uri) { SetS0MeterType(session, req, redirect_uri); });
 			m_pWebEm->RegisterActionCode("setlimitlesstype", [this](auto&& session, auto&& req, auto&& redirect_uri) { SetLimitlessType(session, req, redirect_uri); });
-
+			m_pWebEm->RegisterActionCode("reloadlkihc", [this](auto &&session, auto &&req, auto &&redirect_uri) { GetIHCProjectFromController(session, req, redirect_uri); });
+			m_pWebEm->RegisterActionCode("resetihc", [this](auto &&session, auto &&req, auto &&redirect_uri) { debugLogout(session, req, redirect_uri); });
+			//m_pWebEm->RegisterActionCode("reloadlkihc", std::bind(&CWebServer::GetIHCProjectFromController, this, _1, _2, _3));
+			//m_pWebEm->RegisterActionCode("resetihc", std::bind(&CWebServer::debugLogout, this, _1, _2, _3));
 			m_pWebEm->RegisterActionCode("uploadfloorplanimage", [this](auto&& session, auto&& req, auto&& redirect_uri) { UploadFloorplanImage(session, req, redirect_uri); });
-
 			m_pWebEm->RegisterActionCode("setopenthermsettings", [this](auto&& session, auto&& req, auto&& redirect_uri) { SetOpenThermSettings(session, req, redirect_uri); });
 			RegisterCommandCode(
 				"sendopenthermcommand", [this](auto&& session, auto&& req, auto&& root) { Cmd_SendOpenThermCommand(session, req, root); }, true);
@@ -1236,9 +1238,13 @@ namespace http
 			{
 				// All fine here
 			}
+			else if (htype == HTYPE_IHC)
+			{
+				//all fine here!
+			}
 			else if (htype == HTYPE_BuienRadar)
 			{
-				// All fine here
+				//All fine here
 			}
 			else if ((htype == HTYPE_Wunderground) || (htype == HTYPE_DarkSky) || (htype == HTYPE_AccuWeather) || (htype == HTYPE_OpenWeatherMap) || (htype == HTYPE_ICYTHERMOSTAT) ||
 				(htype == HTYPE_TOONTHERMOSTAT) || (htype == HTYPE_AtagOne) || (htype == HTYPE_PVOUTPUT_INPUT) || (htype == HTYPE_NEST) || (htype == HTYPE_ANNATHERMOSTAT) ||
@@ -1613,9 +1619,13 @@ namespace http
 			{
 				// All fine here
 			}
+			else if (htype == HTYPE_IHC)
+			{
+				//All fine here!
+			}
 			else if (htype == HTYPE_BuienRadar)
 			{
-				// All fine here
+				//All fine here
 			}
 			else if ((htype == HTYPE_Wunderground) || (htype == HTYPE_DarkSky) || (htype == HTYPE_AccuWeather) || (htype == HTYPE_OpenWeatherMap) || (htype == HTYPE_ICYTHERMOSTAT) ||
 				(htype == HTYPE_TOONTHERMOSTAT) || (htype == HTYPE_AtagOne) || (htype == HTYPE_PVOUTPUT_INPUT) || (htype == HTYPE_NEST) || (htype == HTYPE_ANNATHERMOSTAT) ||
