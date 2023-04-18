@@ -1011,7 +1011,7 @@ define(['app'], function (app) {
 					}
 				});
 			}
-			else if ((text.indexOf("Underground") >= 0) || (text.indexOf("DarkSky") >= 0) || (text.indexOf("AccuWeather") >= 0)) {
+			else if ((text.indexOf("Underground") >= 0) || (text.indexOf("DarkSky") >= 0) || (text.indexOf("Visual Crossing") >= 0) || (text.indexOf("AccuWeather") >= 0)) {
 				var apikey = $("#hardwarecontent #divunderground #apikey").val();
 				if (apikey == "") {
 					ShowNotify($.t('Please enter an API Key!'), 2500, true);
@@ -1525,33 +1525,6 @@ define(['app'], function (app) {
 						RefreshHardwareTable();
 					},
 					error: function(){
-						ShowNotify($.t('Problem updating hardware!'), 2500, true);
-					}
-				});
-			}
-			else if (text.indexOf("Goodwe solar inverter via Web") >= 0) {
-				var username = $("#hardwarecontent #divgoodweweb #username").val();
-				if (username == "") {
-					ShowNotify($.t('Please enter your Goodwe username!'), 2500, true);
-					return;
-				}
-				Mode1 = $("#hardwarecontent #divgoodweweb #comboserverselect").val();
-
-				$.ajax({
-					url: "json.htm?type=command&param=updatehardware&htype=" + hardwaretype +
-					"&loglevel=" + logLevel +
-					"&username=" + encodeURIComponent(username) +
-					"&name=" + encodeURIComponent(name) +
-					"&enabled=" + bEnabled +
-					"&idx=" + idx +
-					"&datatimeout=" + datatimeout +
-					"&Mode1=" + Mode1 + "&Mode2=" + Mode2 + "&Mode3=" + Mode3 + "&Mode4=" + Mode4 + "&Mode5=" + Mode5 + "&Mode6=" + Mode6,
-					async: false,
-					dataType: 'json',
-					success: function (data) {
-						RefreshHardwareTable();
-					},
-					error: function () {
 						ShowNotify($.t('Problem updating hardware!'), 2500, true);
 					}
 				});
@@ -2455,7 +2428,8 @@ define(['app'], function (app) {
 			else if (
 					(text.indexOf("Underground") >= 0) ||
 					(text.indexOf("DarkSky") >= 0) ||
-					(text.indexOf("AccuWeather") >= 0)
+					(text.indexOf("AccuWeather") >= 0) ||
+					(text.indexOf("Visual Crossing") >= 0)
 					) {
 				var apikey = $("#hardwarecontent #divunderground #apikey").val();
 				if (apikey == "") {
@@ -2859,31 +2833,6 @@ define(['app'], function (app) {
 					"&name=" + encodeURIComponent(name) +
 					"&enabled=" + bEnabled +
 					"&datatimeout=" + datatimeout,
-					async: false,
-					dataType: 'json',
-					success: function (data) {
-						RefreshHardwareTable();
-					},
-					error: function () {
-						ShowNotify($.t('Problem adding hardware!'), 2500, true);
-					}
-				});
-			}
-			else if (text.indexOf("Goodwe solar inverter via Web") >= 0) {
-				var username = $("#hardwarecontent #divgoodweweb #username").val();
-
-				if (username == "") {
-					ShowNotify($.t('Please enter your Goodwe username!'), 2500, true);
-					return;
-				}
-				Mode1 = $("#hardwarecontent #divgoodweweb #comboserverselect").val();
-
-				$.ajax({
-					url: "json.htm?type=command&param=addhardware&htype=" + hardwaretype +
-					"&loglevel=" + logLevel +
-					"&username=" + encodeURIComponent(username) +
-					"&name=" + encodeURIComponent(name) + "&enabled=" + bEnabled + "&datatimeout=" + datatimeout +
-					"&Mode1=" + Mode1,
 					async: false,
 					dataType: 'json',
 					success: function (data) {
@@ -4366,7 +4315,7 @@ define(['app'], function (app) {
 								}
 							}
 						}
-						else if ((data["Type"].indexOf("Underground") >= 0) || (data["Type"].indexOf("DarkSky") >= 0) || (data["Type"].indexOf("AccuWeather") >= 0)) {
+						else if ((data["Type"].indexOf("Underground") >= 0) || (data["Type"].indexOf("DarkSky") >= 0) || (data["Type"].indexOf("Visual Crossing") >= 0) || (data["Type"].indexOf("AccuWeather") >= 0)) {
 							$("#hardwarecontent #hardwareparamsunderground #apikey").val(data["Username"]);
 							$("#hardwarecontent #hardwareparamsunderground #location").val(data["Password"]);
 						}
@@ -4491,10 +4440,6 @@ define(['app'], function (app) {
 								$("#hardwarecontent #hardwareparamshoneywell #hwApiKey").val(atob(tmparray[0]));
 								$("#hardwarecontent #hardwareparamshoneywell #hwApiSecret").val(atob(tmparray[1]));
 							}
-						}
-						else if (data["Type"].indexOf("Goodwe solar inverter via Web") >= 0) {
-							$("#hardwarecontent #hardwareparamsgoodweweb #comboserverselect").val(data["Mode1"]);
-							$("#hardwarecontent #hardwareparamsgoodweweb #username").val(data["Username"]);
 						}
 						if (data["Type"].indexOf("MySensors Gateway with MQTT") >= 0) {
 
@@ -4733,7 +4678,6 @@ define(['app'], function (app) {
 			$("#hardwarecontent #divtesla").hide();
 			$("#hardwarecontent #divmercedes").hide();
 			$("#hardwarecontent #div1wire").hide();
-			$("#hardwarecontent #divgoodweweb").hide();
 			$("#hardwarecontent #divi2clocal").hide();
 			$("#hardwarecontent #divi2caddress").hide();
 			$("#hardwarecontent #divi2cinvert").hide();
@@ -4971,7 +4915,7 @@ define(['app'], function (app) {
 					$("#hardwarecontent #hardwareparamshttp #divpostdatatextarea").show();
 				}
 			}
-			else if ((text.indexOf("Underground") >= 0) || (text.indexOf("DarkSky") >= 0) || (text.indexOf("AccuWeather") >= 0)) {
+			else if ((text.indexOf("Underground") >= 0) || (text.indexOf("DarkSky") >= 0) || (text.indexOf("Visual Crossing") >= 0) || (text.indexOf("AccuWeather") >= 0)) {
 				$("#hardwarecontent #divunderground").show();
 			}
 			else if(text.indexOf("Meteorologisk") >= 0){
@@ -5020,9 +4964,6 @@ define(['app'], function (app) {
 			}
 			else if (text.indexOf("1-Wire") >= 0) {
 				$("#hardwarecontent #div1wire").show();
-			}
-			else if (text.indexOf("Goodwe solar inverter via Web") >= 0) {
-				$("#hardwarecontent #divgoodweweb").show();
 			}
 			else if (text.indexOf("Evohome via Web") >= 0) {
 				$("#hardwarecontent #divevohomeweb").show();
