@@ -18,6 +18,7 @@
 #include "../hardware/AirconWithMe.h"
 #include "../hardware/Buienradar.h"
 #include "../hardware/DarkSky.h"
+#include "../hardware/VisualCrossing.h"
 #include "../hardware/eHouseTCP.h"
 #include "../hardware/EnOceanESP2.h"
 #include "../hardware/EnOceanESP3.h"
@@ -1008,7 +1009,11 @@ namespace http
 					bDoAdd = false;
 
 				if (bDoAdd)
-					_htypes[Hardware_Type_Desc(ii)] = ii;
+				{
+					std::string description = Hardware_Type_Desc(ii);
+					if (!description.empty())
+						_htypes[description] = ii;
+				}
 			}
 
 			// return a sorted hardware list
@@ -1246,7 +1251,7 @@ namespace http
 			{
 				//All fine here
 			}
-			else if ((htype == HTYPE_Wunderground) || (htype == HTYPE_DarkSky) || (htype == HTYPE_AccuWeather) || (htype == HTYPE_OpenWeatherMap) || (htype == HTYPE_ICYTHERMOSTAT) ||
+			else if ((htype == HTYPE_Wunderground) || (htype == HTYPE_DarkSky) || (htype == HTYPE_VisualCrossing) || (htype == HTYPE_AccuWeather) || (htype == HTYPE_OpenWeatherMap) || (htype == HTYPE_ICYTHERMOSTAT) ||
 				(htype == HTYPE_TOONTHERMOSTAT) || (htype == HTYPE_AtagOne) || (htype == HTYPE_PVOUTPUT_INPUT) || (htype == HTYPE_NEST) || (htype == HTYPE_ANNATHERMOSTAT) ||
 				(htype == HTYPE_THERMOSMART) || (htype == HTYPE_Tado) || (htype == HTYPE_Tesla) || (htype == HTYPE_Mercedes) || (htype == HTYPE_Netatmo))
 			{
@@ -1307,11 +1312,6 @@ namespace http
 			else if (htype == HTYPE_Daikin)
 			{
 				// All fine here
-			}
-			else if (htype == HTYPE_GoodweAPI)
-			{
-				if (username.empty())
-					return;
 			}
 			else if (htype == HTYPE_PythonPlugin)
 			{
@@ -1627,7 +1627,7 @@ namespace http
 			{
 				//All fine here
 			}
-			else if ((htype == HTYPE_Wunderground) || (htype == HTYPE_DarkSky) || (htype == HTYPE_AccuWeather) || (htype == HTYPE_OpenWeatherMap) || (htype == HTYPE_ICYTHERMOSTAT) ||
+			else if ((htype == HTYPE_Wunderground) || (htype == HTYPE_DarkSky) || (htype == HTYPE_VisualCrossing) || (htype == HTYPE_AccuWeather) || (htype == HTYPE_OpenWeatherMap) || (htype == HTYPE_ICYTHERMOSTAT) ||
 				(htype == HTYPE_TOONTHERMOSTAT) || (htype == HTYPE_AtagOne) || (htype == HTYPE_PVOUTPUT_INPUT) || (htype == HTYPE_NEST) || (htype == HTYPE_ANNATHERMOSTAT) ||
 				(htype == HTYPE_THERMOSMART) || (htype == HTYPE_Tado) || (htype == HTYPE_Tesla) || (htype == HTYPE_Mercedes) || (htype == HTYPE_Netatmo))
 			{
@@ -1694,13 +1694,6 @@ namespace http
 			else if (htype == HTYPE_PythonPlugin)
 			{
 				// All fine here
-			}
-			else if (htype == HTYPE_GoodweAPI)
-			{
-				if (username.empty())
-				{
-					return;
-				}
 			}
 			else if (htype == HTYPE_RaspberryPCF8574)
 			{
@@ -9109,6 +9102,15 @@ namespace http
 								root["result"][ii]["forecast_url"] = base64_encode(forecast_url);
 							}
 						}
+						else if (pHardware->HwdType == HTYPE_VisualCrossing)
+						{
+							CVisualCrossing* pWHardware = dynamic_cast<CVisualCrossing*>(pHardware);
+							std::string forecast_url = pWHardware->GetForecastURL();
+							if (!forecast_url.empty())
+							{
+								root["result"][ii]["forecast_url"] = base64_encode(forecast_url);
+							}
+						}
 						else if (pHardware->HwdType == HTYPE_AccuWeather)
 						{
 							CAccuWeather* pWHardware = dynamic_cast<CAccuWeather*>(pHardware);
@@ -10043,7 +10045,8 @@ namespace http
 							int64_t total_first = std::stoll(sd2[0]);
 							int64_t total_last = std::stoll(sValue);
 							int64_t total_real = total_last - total_first;
-							sprintf(szTmp, "%" PRIu64, total_real);
+
+							sprintf(szTmp, "%" PRId64, total_real);
 
 							double musage = 0.0F;
 							switch (metertype)
@@ -10149,10 +10152,9 @@ namespace http
 
 							uint64_t total_min = std::stoull(sd2[0]);
 							uint64_t total_max = std::stoull(sd2[1]);
-							uint64_t total_real;
+							uint64_t total_real = total_max - total_min;
 
-							total_real = total_max - total_min;
-							sprintf(szTmp, "%lld", total_real);
+							sprintf(szTmp, "%" PRIu64, total_real);
 
 							musage = 0;
 							switch (metertype)
@@ -10327,9 +10329,9 @@ namespace http
 								usagecurrent = 0;
 								delivcurrent = 0;
 							}
-							sprintf(szTmp, "%llu Watt", usagecurrent);
+							sprintf(szTmp, "%" PRIu64 " Watt", usagecurrent);
 							root["result"][ii]["Usage"] = szTmp;
-							sprintf(szTmp, "%llu Watt", delivcurrent);
+							sprintf(szTmp, "%" PRIu64 " Watt", delivcurrent);
 							root["result"][ii]["UsageDeliv"] = szTmp;
 							root["result"][ii]["Data"] = sValue;
 							root["result"][ii]["HaveTimeout"] = bHaveTimeout;
@@ -11223,10 +11225,9 @@ namespace http
 
 								uint64_t total_min = std::stoull(sd2[0]);
 								uint64_t total_max = std::stoull(sd2[1]);
-								uint64_t total_real;
+								uint64_t total_real = total_max - total_min;
 
-								total_real = total_max - total_min;
-								sprintf(szTmp, "%lld", total_real);
+								sprintf(szTmp, "%" PRIu64, total_real);
 							}
 							root["result"][ii]["SwitchTypeVal"] = MTYPE_COUNTER;
 							root["result"][ii]["Counter"] = sValue;
@@ -14439,9 +14440,17 @@ namespace http
 									std::string actDateTimeHour = sd[2].substr(0, 13);
 									int64_t actValue = std::stoll(sd[0]); // actual energy value
 
-									// if (actValue >= ulLastValue) ulLastValue = actValue; //Removed because usage energy may be negative if the production power
-									// is greater than usage power
 									ulLastValue = actValue;
+
+									if (ulLastValue < ulFirstValue)
+									{
+										if (ulFirstValue - ulLastValue > 20000)
+										{
+											//probably a meter/counter turnover
+											ulFirstValue = ulFirstRealValue = ulLastValue;
+											LastDateTime = actDateTimeHour;
+										}
+									}
 
 									if (actDateTimeHour != LastDateTime || ((method == 1) && (itt + 1 == result.end())))
 									{
@@ -14586,6 +14595,16 @@ namespace http
 									struct tm ntime;
 									time_t atime;
 									ParseSQLdatetime(atime, ntime, sd[1], -1);
+
+									if (actValue < ulFirstValue)
+									{
+										if (ulRealFirstValue - actValue > 20000)
+										{
+											//Assume ,eter/counter turnover
+											ulFirstValue = ulRealFirstValue = actValue;
+											lastHour = ntime.tm_hour;
+										}
+									}
 
 									if (lastHour != ntime.tm_hour)
 									{
@@ -15375,6 +15394,7 @@ namespace http
 							std::string szValue = szTmp;
 							sprintf(szTmp, "%.3f", atof(szValue.c_str()) / divider);
 							root["result"][ii]["v"] = szTmp;
+
 							sprintf(szTmp, "%" PRIu64, total_real_usage_2);
 							szValue = szTmp;
 							sprintf(szTmp, "%.3f", atof(szValue.c_str()) / divider);
@@ -15384,6 +15404,7 @@ namespace http
 							szValue = szTmp;
 							sprintf(szTmp, "%.3f", atof(szValue.c_str()) / divider);
 							root["result"][ii]["r1"] = szTmp;
+
 							sprintf(szTmp, "%" PRIu64, total_real_deliv_2);
 							szValue = szTmp;
 							sprintf(szTmp, "%.3f", atof(szValue.c_str()) / divider);
@@ -15417,7 +15438,8 @@ namespace http
 							}
 
 							total_real = total_max - total_min;
-							sprintf(szTmp, "%lld", total_real);
+							sprintf(szTmp, "%" PRId64, total_real);
+
 							std::string szValue = szTmp;
 							switch (metertype)
 							{
@@ -16939,7 +16961,8 @@ namespace http
 								}
 
 								total_real = total_max - total_min;
-								sprintf(szTmp, "%lld", total_real);
+								sprintf(szTmp, "%" PRId64, total_real);
+
 								std::string szValue = szTmp;
 
 								if (!sgroupby.empty())
@@ -17592,14 +17615,16 @@ namespace http
 
 							root["result"][ii]["d"] = szDateEnd;
 
-							sprintf(szTmp, "%lld", total_real_usage);
+							sprintf(szTmp, "%" PRIu64, total_real_usage);
 							std::string szValue = szTmp;
 							sprintf(szTmp, "%.3f", atof(szValue.c_str()) / divider);
 							root["result"][ii]["v"] = szTmp;
+
 							sprintf(szTmp, "%" PRIu64, total_real_deliv);
 							szValue = szTmp;
 							sprintf(szTmp, "%.3f", atof(szValue.c_str()) / divider);
 							root["result"][ii]["v2"] = szTmp;
+							
 							ii++;
 							if (bHaveDeliverd)
 							{
@@ -17629,9 +17654,8 @@ namespace http
 							}
 
 							total_real = total_max - total_min;
-							sprintf(szTmp, "%lld", total_real);
+							sprintf(szTmp, "%" PRId64, total_real);							std::string szValue = szTmp;
 
-							std::string szValue = szTmp;
 							switch (metertype)
 							{
 							case MTYPE_ENERGY:

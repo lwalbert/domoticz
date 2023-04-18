@@ -43,6 +43,7 @@
 #include "../hardware/I2C.h"
 #include "../hardware/Wunderground.h"
 #include "../hardware/DarkSky.h"
+#include "../hardware/VisualCrossing.h"
 #include "../hardware/HardwareMonitor.h"
 #include "../hardware/Dummy.h"
 #include "../hardware/Tellstick.h"
@@ -121,7 +122,6 @@
 #include "../hardware/BleBox.h"
 #include "../hardware/Ec3kMeterTCP.h"
 #include "../hardware/OpenWeatherMap.h"
-#include "../hardware/GoodweAPI.h"
 #include "../hardware/Daikin.h"
 #include "../hardware/HEOS.h"
 #include "../hardware/MultiFun.h"
@@ -915,6 +915,9 @@ bool MainWorker::AddHardwareFromParams(
 	case HTYPE_DarkSky:
 		pHardware = new CDarkSky(ID, Username, Password);
 		break;
+	case HTYPE_VisualCrossing:
+		pHardware = new CVisualCrossing(ID, Username, Password);
+		break;
 	case HTYPE_AccuWeather:
 		pHardware = new CAccuWeather(ID, Username, Password);
 		break;
@@ -1024,9 +1027,6 @@ bool MainWorker::AddHardwareFromParams(
 		break;
 	case HTYPE_Ec3kMeterTCP:
 		pHardware = new Ec3kMeterTCP(ID, Address, Port);
-		break;
-	case HTYPE_GoodweAPI:
-		pHardware = new GoodweAPI(ID, Username, Mode1);
 		break;
 	case HTYPE_Yeelight:
 		pHardware = new Yeelight(ID);
@@ -12717,7 +12717,7 @@ bool MainWorker::SwitchLight(const std::string& idx, const std::string& switchcm
 bool MainWorker::SwitchLight(const uint64_t idx, const std::string& switchcmd, const int level, _tColor color, const bool ooc, const int ExtraDelay, const std::string& User)
 {
 	//Get Device details
-	_log.Debug(DEBUG_NORM, "MAIN SwitchLight idx:%" PRId64 " cmd:%s lvl:%d ", idx, switchcmd.c_str(), level);
+	_log.Debug(DEBUG_NORM, "MAIN SwitchLight idx:%" PRIu64 " cmd:%s lvl:%d ", idx, switchcmd.c_str(), level);
 	std::vector<std::vector<std::string> > result;
 	result = m_sql.safe_query(
 		"SELECT HardwareID,DeviceID,Unit,Type,SubType,SwitchType,AddjValue2,nValue,sValue,Name,Options FROM DeviceStatus WHERE (ID == %" PRIu64 ")",
